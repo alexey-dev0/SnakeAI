@@ -45,7 +45,7 @@ namespace SnakeAI
 
 			body = new List<Point>();
 			Energy = 50;
-			Rotation = NeuroNetwork.R.Next(4);
+			Rotation = StaticRandom.Next(4);
 			lastTurns = new List<double> { 0, 0, 0 };
 
 			Initialize();
@@ -53,10 +53,10 @@ namespace SnakeAI
 
 		private void Initialize()
 		{
-			var point = new Point(NeuroNetwork.R.Next(1, Field.Width - 1), NeuroNetwork.R.Next(1, Field.Height - 1));
+			var point = new Point(StaticRandom.Next(1, Field.Width - 1), StaticRandom.Next(1, Field.Height - 1));
 			while (Field[point] != Content.EMPTY)
 			{
-				point = new Point(NeuroNetwork.R.Next(1, Field.Width - 1), NeuroNetwork.R.Next(1, Field.Height - 1));
+				point = new Point(StaticRandom.Next(1, Field.Width - 1), StaticRandom.Next(1, Field.Height - 1));
 			}
 			Field[point] = Content.SNAKE;
 			body.Add(point);

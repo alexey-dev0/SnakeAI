@@ -5,8 +5,6 @@ namespace SnakeAI
 {
 	internal class Field
 	{
-		public Random R;
-
 		public List<List<Content>> Grid { get; set; }
 		public List<Point> Food { get; set; }
 		public int Width { get; }
@@ -26,7 +24,6 @@ namespace SnakeAI
 
 		public Field(int width, int height, int seed)
 		{
-			R = new Random(seed);
 			Width = width;
 			Height = height;
 			Grid = new List<List<Content>>();
@@ -44,12 +41,12 @@ namespace SnakeAI
 
 		public void PlaceFood()
 		{
-			var point = new Point(R.Next(Width), R.Next(Height));
+			var point = new Point(StaticRandom.Next(Width), StaticRandom.Next(Height));
 			int count = 0;
 			while (this[point] != Content.EMPTY)
 			{
 				if (++count > 1000) throw new Exception();
-				point = new Point(R.Next(Width), R.Next(Height));
+				point = new Point(StaticRandom.Next(Width), StaticRandom.Next(Height));
 			}
 			this[point] = Content.FOOD;
 			Food.Add(point);

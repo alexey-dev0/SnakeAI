@@ -8,7 +8,6 @@ namespace SnakeAI
 {
 	internal class NeuroNetwork
 	{
-		public Random R;
 		public static int ID = 0;
 
 		public Color Color { get; set; }
@@ -35,7 +34,6 @@ namespace SnakeAI
 
 		public NeuroNetwork(int inputs, List<int> hiddenLayers, int outputs, int memory = 0, bool generate = true)
 		{
-			R = new Random(Id);
 			Inputs = new List<Neuron>();
 			HiddenLayers = new List<List<Neuron>>();
 			for (int i = 0; i < hiddenLayers.Count; i++)
@@ -44,31 +42,31 @@ namespace SnakeAI
 			Memory = new List<Neuron>();
 
 			if (generate) GenerateRand(inputs, hiddenLayers, outputs, memory);
-			Color = Color.FromArgb(R.Next(256), R.Next(256), R.Next(256));
+			Color = Color.FromArgb(StaticRandom.Next(256), StaticRandom.Next(256), StaticRandom.Next(256));
 		}
 
 		private void GenerateRand(int inputs, List<int> hiddenLayers, int outputs, int memory)
 		{
 			for (int i = 0; i < inputs; i++)
-				Inputs.Add(new Neuron(this));
+				Inputs.Add(new Neuron());
 			for (int i = 0; i < memory; i++)
-				Memory.Add(new Neuron(this, hiddenLayers[hiddenLayers.Count - 1], 0, NeuronType.MEMORY));
+				Memory.Add(new Neuron(hiddenLayers[hiddenLayers.Count - 1], 0, NeuronType.MEMORY));
 			for (int i = 0; i < hiddenLayers.Count; i++)
 			{
 				for (int j = 0; j < hiddenLayers[i]; j++)
 				{
 					var value = GetRandomWeight();
 					var prevLayer = i == 0 ? Inputs.Concat(Memory).ToList() : HiddenLayers[i - 1];
-					HiddenLayers[i].Add(new Neuron(this, prevLayer.Count, value, NeuronType.HIDDEN));
+					HiddenLayers[i].Add(new Neuron(prevLayer.Count, value, NeuronType.HIDDEN));
 				}
 			}
 			for (int i = 0; i < outputs; i++)
-				Outputs.Add(new Neuron(this, hiddenLayers[hiddenLayers.Count - 1], 0, NeuronType.OUTPUT));
+				Outputs.Add(new Neuron(hiddenLayers[hiddenLayers.Count - 1], 0, NeuronType.OUTPUT));
 		}
 
-		public double GetRandomWeight()
+		public static double GetRandomWeight()
 		{
-			return R.NextDouble() * 2 - 1;
+			return StaticRandom.NextDouble() * 2 - 1;
 		}
 
 		private void ProcessLayer(List<Neuron> prevLayer, List<Neuron> nextLayer, Func<double, double> activateFunction)
@@ -100,12 +98,12 @@ namespace SnakeAI
 			{
 				for (int j = 0; j < HiddenLayers[i].Count; j++)
 				{
-					if (R.NextDouble() > 0.5) HiddenLayers[i][j] = other.HiddenLayers[i][j].Copy(this);
+					if (StaticRandom.NextDouble() > 0.5) HiddenLayers[i][j] = other.HiddenLayers[i][j].Copy();
 				}
 			}
 			for (int j = 0; j < Outputs.Count; j++)
 			{
-				if (R.NextDouble() > 0.5) Outputs[j] = other.Outputs[j].Copy(this);
+				if (StaticRandom.NextDouble() > 0.5) Outputs[j] = other.Outputs[j].Copy();
 			}
 		}
 
@@ -131,22 +129,22 @@ namespace SnakeAI
 			var result = new NeuroNetwork(Inputs.Count, hidden, Outputs.Count, Memory.Count, false);
 			for (int i = 0; i < Inputs.Count; i++)
 			{
-				result.Inputs.Add(Inputs[i].Copy(result));
+				result.Inputs.Add(Inputs[i].Copy());
 			}
 			for (int i = 0; i < Memory.Count; i++)
 			{
-				result.Memory.Add(Memory[i].Copy(result));
+				result.Memory.Add(Memory[i].Copy());
 			}
 			for (int i = 0; i < hidden.Count; i++)
 			{
 				for (int j = 0; j < hidden[i]; j++)
 				{
-					result.HiddenLayers[i].Add(HiddenLayers[i][j].Copy(result));
+					result.HiddenLayers[i].Add(HiddenLayers[i][j].Copy());
 				}
 			}
 			for (int i = 0; i < Outputs.Count; i++)
 			{
-				result.Outputs.Add(Outputs[i].Copy(result));
+				result.Outputs.Add(Outputs[i].Copy());
 			}
 			result.Color = Color;
 			return result;
@@ -160,7 +158,7 @@ namespace SnakeAI
 				{
 					for (int w = 0; w < HiddenLayers[i][j].Weights.Length; w++)
 					{
-						if (R.NextDouble() < rate)
+						if (StaticRandom.NextDouble() < rate)
 						{
 							HiddenLayers[i][j].Weights[w] = GetRandomWeight();
 						}
@@ -172,7 +170,7 @@ namespace SnakeAI
 			{
 				for (int w = 0; w < Outputs[i].Weights.Length; w++)
 				{
-					if (R.NextDouble() < rate)
+					if (StaticRandom.NextDouble() < rate)
 					{
 						Outputs[i].Weights[w] = GetRandomWeight();
 					}
@@ -183,7 +181,7 @@ namespace SnakeAI
 			{
 				for (int w = 0; w < Memory[i].Weights.Length; w++)
 				{
-					if (R.NextDouble() < rate)
+					if (StaticRandom.NextDouble() < rate)
 					{
 						Memory[i].Weights[w] = GetRandomWeight();
 					}

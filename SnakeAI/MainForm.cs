@@ -22,7 +22,6 @@ namespace SnakeAI
 		private int snakeOutputs = 2;
 		private int snakeMemory = 4;
 		private double shakeRate = 0.1;
-		private Random R = new Random();
 		private Dictionary<string, int> scores = new Dictionary<string, int>();
 		private Snake topSnake;
 		private Snake topSnake2;
@@ -94,7 +93,7 @@ namespace SnakeAI
 			for (int i = 0; i < populationCount; i++)
 			{
 				fields.Add(new Field(fieldSize, fieldSize, i * (int)DateTime.Now.Ticks));
-				var neuroNetwork = new NeuroNetwork(snakeInputs, hiddenLayersConfig[R.Next(hiddenLayersConfig.Count)], snakeOutputs, snakeMemory);
+				var neuroNetwork = new NeuroNetwork(snakeInputs, hiddenLayersConfig[StaticRandom.Next(hiddenLayersConfig.Count)], snakeOutputs, snakeMemory);
 				population.Add(new Snake(fields[i], neuroNetwork));
 			}
 		}
@@ -136,7 +135,6 @@ namespace SnakeAI
 							}
 						}
 					}
-					//g.DrawString($"{field.Food.Count}", Font, Brushes.White, xOffset, yOffset);
 				}
 			}
 			pbField.Image = bmp;
@@ -147,10 +145,6 @@ namespace SnakeAI
 			lblPopulation.Text = $"Population: {populationNumber}";
 			lblMaxFitness.Text = $"Max  Fitness: {scores["maxFitness"]}";
 			lblLastFitness.Text = $"Last Fitness: {scores["lastFitness"]}";
-			/*if (population.Count > 0 && !worker.IsBusy)
-            {
-                tbNeuro.Text = population[0].NeuroNetwork.ToString();
-            }*/
 		}
 
 		private void CreatePopulation()
@@ -199,7 +193,7 @@ namespace SnakeAI
 			}
 			for (int i = 0; i < populationCount * 0.2; i++)
 			{
-				var neuroNetwork = new NeuroNetwork(snakeInputs, hiddenLayersConfig[R.Next(hiddenLayersConfig.Count)], snakeOutputs, snakeMemory);
+				var neuroNetwork = new NeuroNetwork(snakeInputs, hiddenLayersConfig[StaticRandom.Next(hiddenLayersConfig.Count)], snakeOutputs, snakeMemory);
 				population.Add(new Snake(fields[fieldCount], neuroNetwork));
 				fieldCount++;
 			}
@@ -341,9 +335,7 @@ namespace SnakeAI
 
 		private void trackDrawer_ValueChanged(object sender, EventArgs e)
 		{
-			//tDrawer.Stop();
 			tDrawer.Interval = 10000 / trackDrawer.Value;
-			//tDrawer.Start();
 		}
 	}
 }
